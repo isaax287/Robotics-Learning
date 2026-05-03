@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binam Robotics Learning</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Lora:wght@500&display=swap');
+        body { font-family: 'Outfit', sans-serif; background-color: #f9f7f4; color: #1a1a1a; margin: 0; padding: 40px; }
+        .container { max-width: 850px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; border-bottom: 1px solid #e8e3db; padding-bottom: 20px; }
+        h1 { font-family: 'Lora', serif; font-size: 2.5rem; margin: 0; }
+        h1 span { color: #8b7355; }
+        .progress-box { text-align: right; }
+        .pct { font-size: 2.8rem; font-weight: 600; line-height: 1; color: #1a1a1a; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 30px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .tab-btn { padding: 10px 22px; border-radius: 25px; border: 1px solid #e0dbd2; background: white; cursor: pointer; white-space: nowrap; transition: 0.3s; font-weight: 500; color: #7a7068; }
+        .tab-btn.active { background: #1a1a1a; color: white; border-color: #1a1a1a; }
+        .card { background: white; padding: 35px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #ede9e3; }
+        .week-item { display: flex; align-items: flex-start; padding: 25px 0; border-bottom: 1px solid #f5f2ee; }
+        .week-item:last-child { border-bottom: none; }
+        input[type="checkbox"] { width: 24px; height: 24px; cursor: pointer; accent-color: #8b7355; margin-top: 4px; border-radius: 6px; }
+        .content { margin-left: 20px; flex: 1; }
+        .label { font-size: 1.2rem; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; }
+        .done-text { color: #b0a898; text-decoration: line-through; }
+        .routine { color: #6b6259; font-size: 0.95rem; margin: 8px 0 15px 0; line-height: 1.6; }
+        .links a { font-size: 0.85rem; color: #8b7355; text-decoration: none; margin-right: 20px; font-weight: 600; border-bottom: 1px solid transparent; transition: 0.2s; }
+        .links a:hover { border-bottom: 1px solid #8b7355; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <div style="font-size: 0.8rem; color: #a0998e; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">Binam Strategy</div>
+            <h1>Modern <span>Robotics</span></h1>
+        </div>
+        <div class="progress-box">
+            <div class="pct" id="progressPct">0%</div>
+            <div style="color: #b0a898; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px;">Overall Mastery</div>
+        </div>
+    </header>
+
+    <div class="tabs" id="tabBar">
+        <button class="tab-btn active" onclick="switchMonth('m1')">Month 1</button>
+        <button class="tab-btn" onclick="switchMonth('m2')">Month 2</button>
+        <button class="tab-btn" onclick="switchMonth('m3')">Month 3</button>
+        <button class="tab-btn" onclick="switchMonth('m4')">Month 4</button>
+        <button class="tab-btn" onclick="switchMonth('m5')">Month 5</button>
+    </div>
+
+    <div class="card" id="contentCard"></div>
+</div>
+
+<script>
+    const curriculum = [
+        { id: "m1", title: "Setup & First Robot", weeks: [
+            { id: "m1w1", label: "Dev Environment", routine: "Install Ubuntu 24.04 (VirtualBox or Dual Boot), VS Code, and Cursor AI. Get comfortable with the Linux terminal.", links: [{name: "Video: Ubuntu 24.04 Setup", url: "https://www.youtube.com/watch?v=Q-6pat1VSmE"}] },
+            { id: "m1w2", label: "Python for Robotics", routine: "Write scripts for sensor data and servo control. Focus on using AI to debug your first Python errors.", links: [{name: "Video: Python for Robotics 2026", url: "https://www.youtube.com/watch?v=De1y6heyLR4"}] },
+            { id: "m1w3", label: "ROS 2 — First Node", routine: "Install ROS 2 Jazzy. Run turtlesim and write your first publisher/subscriber node.", links: [{name: "Video: ROS 2 Basics Explained", url: "https://www.youtube.com/watch?v=0_3V4_LpM_U"}] },
+            { id: "m1w4", label: "Webots Simulation", routine: "Spawn a robot in Webots and control it via ROS 2. Master the bridge between code and physics.", links: [{name: "Video: Webots + ROS 2 Bridge", url: "https://www.youtube.com/watch?v=E6vUvO_K0K8"}] }
+        ]},
+        { id: "m2", title: "Navigation & Sensing", weeks: [
+            { id: "m2w1", label: "Lidar & TF2", routine: "Visualize Lidar in RViz2 and understand TF2 transforms (the math of where parts are).", links: [{name: "Video: Understanding TF2", url: "https://www.youtube.com/watch?v=Qy7S9fS-6rM"}] },
+            { id: "m2w2", label: "Nav2 Stack", routine: "Get a robot to navigate autonomously from A to B using a map and path planning.", links: [{name: "Video: Nav2 Guide", url: "https://www.youtube.com/watch?v=jW_6L6p8U_E"}] },
+            { id: "m2w3", label: "SLAM with Toolbox", routine: "Build a map of an unknown environment in real-time while moving the robot.", links: [{name: "Reading: SLAM Toolbox Guide", url: "https://github.com/SteveMacenski/slam_toolbox"}] },
+            { id: "m2w4", label: "Behavior Trees", routine: "Use trees to give your robot logic (e.g., if battery low, go to charger).", links: [{name: "Video: Behavior Trees in ROS", url: "https://www.youtube.com/watch?v=4pP5v4lP2S8"}] }
+        ]},
+        { id: "m3", title: "Computer Vision + AI", weeks: [
+            { id: "m3w1", label: "Camera & Streams", routine: "Connect a camera feed to ROS 2 and process raw image data in Python.", links: [{name: "Video: OpenCV + ROS 2", url: "https://www.youtube.com/watch?v=7pG6I6yC8S0"}] },
+            { id: "m3w2", label: "YOLOv8 Detection", routine: "Run YOLOv8 on a live ROS 2 camera stream to detect people and objects.", links: [{name: "Video: YOLOv8 Deployment", url: "https://www.youtube.com/watch?v=S-mI_F2E6_0"}] },
+            { id: "m3w3", label: "Depth Cameras", routine: "Use 3D cameras to detect obstacles in 3D space. Process pointclouds.", links: [{name: "Reading: RealSense ROS 2", url: "https://github.com/IntelRealSense/realsense-ros"}] },
+            { id: "m3w4", label: "Vision → Action", routine: "Build a pipeline where a robot sees an object and moves toward it automatically.", links: [{name: "Video: Visual Servoing", url: "https://www.youtube.com/watch?v=R9E-1Zf0k_s"}] }
+        ]},
+        { id: "m4", title: "Manipulation & Arms", weeks: [
+            { id: "m4w1", label: "MoveIt 2 Basics", routine: "Set up MoveIt 2 with a simulated robot arm. Plan collision-free paths.", links: [{name: "Video: MoveIt 2 Intro", url: "https://www.youtube.com/watch?v=P69R8ZzW-Zc"}] },
+            { id: "m4w2", label: "Grasp Planning", routine: "Teach an arm how to pick up objects based on their shape.", links: [{name: "Tutorial: Pick and Place", url: "https://moveit.picknik.ai/main/doc/examples/pick_and_place/pick_and_place_tutorial.html"}] },
+            { id: "m4w3", label: "ROS 2 Actions", routine: "Program long-term goals with feedback (like 'move arm 90 degrees' with updates).", links: [{name: "Video: Actions in ROS 2", url: "https://www.youtube.com/watch?v=680D9RzY6_o"}] },
+            { id: "m4w4", label: "Arm + Vision", routine: "Integrate YOLO detections to guide an arm to grab a specific object.", links: [{name: "Project: Smart Sorting Arm", url: "https://github.com/topics/moveit2"}] }
+        ]},
+        { id: "m5", title: "AI Agents & Deployment", weeks: [
+            { id: "m5w1", label: "LLM Integration", routine: "Use an LLM (Claude/GPT) as a high-level planner for your ROS nodes.", links: [{name: "Video: LLM Robotics", url: "https://www.youtube.com/watch?v=rXjE8Zl0m68"}] },
+            { id: "m5w2", label: "Voice Controls", routine: "Use Whisper for voice-to-text to give your robot commands like 'Come here'.", links: [{name: "Tutorial: OpenAI Whisper", url: "https://github.com/openai/whisper"}] },
+            { id: "m5w3", label: "Edge Hardware", routine: "Deploy your code to an NVIDIA Jetson Orin. Optimize for real-time speed.", links: [{name: "Video: Jetson Setup", url: "https://www.youtube.com/watch?v=v79pG48B89k"}] },
+            { id: "m5w4", label: "Binam Portfolio", routine: "Record a video of your simulated robot performing a task. Document your Binam startup tech.", links: [{name: "Guide: Tech Portfolios", url: "https://github.com"}] }
+        ]}
+    ];
+
+    let checked = JSON.parse(localStorage.getItem('binam_v2')) || {};
+    let currentMonth = 'm1';
+
+    function save() { localStorage.setItem('binam_v2', JSON.stringify(checked)); updateProgress(); }
+    function updateProgress() { const total = 20; const done = Object.values(checked).filter(Boolean).length; document.getElementById('progressPct').innerText = Math.round((done / total) * 100) + '%'; }
+    function switchMonth(id) { 
+        currentMonth = id; 
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.innerText.toLowerCase().includes(id.replace('m', ''))));
+        render(); 
+    }
+    function toggle(id) { checked[id] = !checked[id]; save(); render(); }
+    function render() {
+        const month = curriculum.find(m => m.id === currentMonth);
+        const card = document.getElementById('contentCard');
+        let html = `<h2 style="margin-top:0; font-family:'Lora', serif; font-size:1.5rem; color:#8b7355;">${month.title}</h2>`;
+        month.weeks.forEach((w, i) => {
+            const isDone = !!checked[w.id];
+            html += `<div class="week-item">
+                <input type="checkbox" ${isDone ? 'checked' : ''} onclick="toggle('${w.id}')">
+                <div class="content">
+                    <div class="label ${isDone ? 'done-text' : ''}">Week ${i+1} — ${w.label}</div>
+                    <div class="routine">${w.routine}</div>
+                    <div class="links">${w.links.map(lk => `<a href="${lk.url}" target="_blank">${lk.name} ↗</a>`).join('')}</div>
+                </div>
+            </div>`;
+        });
+        card.innerHTML = html;
+        updateProgress();
+    }
+    render();
+</script>
+</body>
+</html>
